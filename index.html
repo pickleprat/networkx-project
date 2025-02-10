@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1>Microalgae Network</h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 700px;
+                 background-color: #ffffff;
+                 border: 2px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "blue", "id": "Spirulina sp.", "label": "Spirulina sp.", "shape": "dot", "size": 20, "title": "Microalgae: Spirulina sp."}, {"color": "red", "id": "mercury", "label": "mercury", "shape": "dot", "size": 15, "title": "Heavy Metal: mercury"}, {"color": "red", "id": "cadmium", "label": "cadmium", "shape": "dot", "size": 15, "title": "Heavy Metal: cadmium"}, {"color": "purple", "id": "metal_factor_concentration: 80\u20134250", "label": "metal_factor_concentration: 80\u20134250", "shape": "dot", "size": 12, "title": "Metal Factor Concentration: 80\u20134250"}, {"color": "purple", "id": "cadmium: 0.40 \u00b5g/g biomass", "label": "cadmium: 0.40 \u00b5g/g biomass", "shape": "dot", "size": 12, "title": "Cadmium: 0.40 \u00b5g/g biomass"}, {"color": "purple", "id": "mercury: 1.34 \u00b5g/g biomass", "label": "mercury: 1.34 \u00b5g/g biomass", "shape": "dot", "size": 12, "title": "Mercury: 1.34 \u00b5g/g biomass"}, {"color": "orange", "id": "cadmium: 3.82 mg/kg", "label": "cadmium: 3.82 mg/kg", "shape": "dot", "size": 12, "title": "Concentration Cadmium: 3.82 mg/kg"}, {"color": "blue", "id": "Chlamydomonas reinhardtii", "label": "Chlamydomonas reinhardtii", "shape": "dot", "size": 20, "title": "Microalgae: Chlamydomonas reinhardtii"}, {"color": "red", "id": "lead", "label": "lead", "shape": "dot", "size": 15, "title": "Heavy Metal: lead"}, {"color": "purple", "id": "mercury: 0.072 mg/kg", "label": "mercury: 0.072 mg/kg", "shape": "dot", "size": 12, "title": "Mercury: 0.072 mg/kg"}, {"color": "purple", "id": "cadmium: 0.043 mg/kg", "label": "cadmium: 0.043 mg/kg", "shape": "dot", "size": 12, "title": "Cadmium: 0.043 mg/kg"}, {"color": "purple", "id": "lead: 0.098 mg/kg", "label": "lead: 0.098 mg/kg", "shape": "dot", "size": 12, "title": "Lead: 0.098 mg/kg"}, {"color": "orange", "id": "mercury: 0.76 mg/kg", "label": "mercury: 0.76 mg/kg", "shape": "dot", "size": 12, "title": "Concentration Mercury: 0.76 mg/kg"}, {"color": "orange", "id": "cadmium: 100 mg/kg", "label": "cadmium: 100 mg/kg", "shape": "dot", "size": 12, "title": "Concentration Cadmium: 100 mg/kg"}, {"color": "blue", "id": "Ulothrix zonata", "label": "Ulothrix zonata", "shape": "dot", "size": 20, "title": "Microalgae: Ulothrix zonata"}, {"color": "red", "id": "copper", "label": "copper", "shape": "dot", "size": 15, "title": "Heavy Metal: copper"}, {"color": "green", "id": "langmuir", "label": "langmuir", "shape": "dot", "size": 15, "title": "Adsorption Model"}, {"color": "purple", "id": "adsorption_model: langmuir", "label": "adsorption_model: langmuir", "shape": "dot", "size": 12, "title": "Adsorption Model: langmuir"}, {"color": "purple", "id": "removal_time: 1200s", "label": "removal_time: 1200s", "shape": "dot", "size": 12, "title": "Removal Time: 1200s"}, {"color": "purple", "id": "optimum_pH: 4.5s", "label": "optimum_pH: 4.5s", "shape": "dot", "size": 12, "title": "Optimum Ph: 4.5s"}, {"color": "orange", "id": "range: 5 - 52 mg/L", "label": "range: 5 - 52 mg/L", "shape": "dot", "size": 12, "title": "Concentration Range: 5 - 52 mg/L"}, {"color": "blue", "id": "Spirogyra sp.", "label": "Spirogyra sp.", "shape": "dot", "size": 20, "title": "Microalgae: Spirogyra sp."}, {"color": "purple", "id": "max_adsorption_capacity: 140 mg/g biomass", "label": "max_adsorption_capacity: 140 mg/g biomass", "shape": "dot", "size": 12, "title": "Max Adsorption Capacity: 140 mg/g biomass"}, {"color": "purple", "id": "time_frame: 1.867 hours", "label": "time_frame: 1.867 hours", "shape": "dot", "size": 12, "title": "Time Frame: 1.867 hours"}, {"color": "purple", "id": "initial_concentration: 200 mg/L", "label": "initial_concentration: 200 mg/L", "shape": "dot", "size": 12, "title": "Initial Concentration: 200 mg/L"}, {"color": "orange", "id": "range: 105 - 204 mg/L", "label": "range: 105 - 204 mg/L", "shape": "dot", "size": 12, "title": "Concentration Range: 105 - 204 mg/L"}, {"color": "blue", "id": "Spirulina platensis", "label": "Spirulina platensis", "shape": "dot", "size": 20, "title": "Microalgae: Spirulina platensis"}, {"color": "purple", "id": "removal_efficiency: 87.69 %", "label": "removal_efficiency: 87.69 %", "shape": "dot", "size": 12, "title": "Removal Efficiency: 87.69 %"}, {"color": "purple", "id": "best_fit_model: freundlich", "label": "best_fit_model: freundlich", "shape": "dot", "size": 12, "title": "Best Fit Model: freundlich"}, {"color": "purple", "id": "desired_removal_rate: 90 %", "label": "desired_removal_rate: 90 %", "shape": "dot", "size": 12, "title": "Desired Removal Rate: 90 %"}, {"color": "orange", "id": "range: 40-200 mg/L", "label": "range: 40-200 mg/L", "shape": "dot", "size": 12, "title": "Concentration Range: 40-200 mg/L"}, {"color": "blue", "id": "Parachlorella sp.", "label": "Parachlorella sp.", "shape": "dot", "size": 20, "title": "Microalgae: Parachlorella sp."}, {"color": "purple", "id": "max_adsorption_capacity: 98.20 mg/g", "label": "max_adsorption_capacity: 98.20 mg/g", "shape": "dot", "size": 12, "title": "Max Adsorption Capacity: 98.20 mg/g"}, {"color": "purple", "id": "temperature: 35 \u00b0C", "label": "temperature: 35 \u00b0C", "shape": "dot", "size": 12, "title": "Temperature: 35 \u00b0C"}, {"color": "orange", "id": "range: 18-180 mg/L", "label": "range: 18-180 mg/L", "shape": "dot", "size": 12, "title": "Concentration Range: 18-180 mg/L"}, {"color": "blue", "id": "Scenedesmus obliquus", "label": "Scenedesmus obliquus", "shape": "dot", "size": 20, "title": "Microalgae: Scenedesmus obliquus"}, {"color": "purple", "id": "breakthrough_time: 930 mins", "label": "breakthrough_time: 930 mins", "shape": "dot", "size": 12, "title": "Breakthrough Time: 930 mins"}, {"color": "purple", "id": "adsorption_capacity: 0.038 mg/g", "label": "adsorption_capacity: 0.038 mg/g", "shape": "dot", "size": 12, "title": "Adsorption Capacity: 0.038 mg/g"}, {"color": "purple", "id": "flow_rate: 6 mL/min", "label": "flow_rate: 6 mL/min", "shape": "dot", "size": 12, "title": "Flow Rate: 6 mL/min"}, {"color": "purple", "id": "influent_concentration: 0.008 mg/L", "label": "influent_concentration: 0.008 mg/L", "shape": "dot", "size": 12, "title": "Influent Concentration: 0.008 mg/L"}, {"color": "orange", "id": "range: 2.8-7.7 mg/L", "label": "range: 2.8-7.7 mg/L", "shape": "dot", "size": 12, "title": "Concentration Range: 2.8-7.7 mg/L"}]);
+                  edges = new vis.DataSet([{"color": "gray", "from": "Spirulina sp.", "title": "Removes", "to": "mercury"}, {"color": "gray", "from": "Spirulina sp.", "title": "Removes", "to": "cadmium"}, {"color": "gray", "from": "Spirulina sp.", "title": "Outcome", "to": "metal_factor_concentration: 80\u20134250"}, {"color": "gray", "from": "Spirulina sp.", "title": "Outcome", "to": "cadmium: 0.40 \u00b5g/g biomass"}, {"color": "gray", "from": "Spirulina sp.", "title": "Outcome", "to": "mercury: 1.34 \u00b5g/g biomass"}, {"color": "gray", "from": "Spirulina sp.", "title": "Concentration", "to": "cadmium: 3.82 mg/kg"}, {"color": "gray", "from": "Chlamydomonas reinhardtii", "title": "Removes", "to": "mercury"}, {"color": "gray", "from": "Chlamydomonas reinhardtii", "title": "Removes", "to": "cadmium"}, {"color": "gray", "from": "Chlamydomonas reinhardtii", "title": "Removes", "to": "lead"}, {"color": "gray", "from": "Chlamydomonas reinhardtii", "title": "Outcome", "to": "mercury: 0.072 mg/kg"}, {"color": "gray", "from": "Chlamydomonas reinhardtii", "title": "Outcome", "to": "cadmium: 0.043 mg/kg"}, {"color": "gray", "from": "Chlamydomonas reinhardtii", "title": "Outcome", "to": "lead: 0.098 mg/kg"}, {"color": "gray", "from": "Chlamydomonas reinhardtii", "title": "Concentration", "to": "mercury: 0.76 mg/kg"}, {"color": "gray", "from": "Chlamydomonas reinhardtii", "title": "Concentration", "to": "cadmium: 100 mg/kg"}, {"color": "gray", "from": "Ulothrix zonata", "title": "Removes", "to": "copper"}, {"color": "black", "from": "Ulothrix zonata", "title": "Uses", "to": "langmuir"}, {"color": "gray", "from": "Ulothrix zonata", "title": "Outcome", "to": "adsorption_model: langmuir"}, {"color": "gray", "from": "Ulothrix zonata", "title": "Outcome", "to": "removal_time: 1200s"}, {"color": "gray", "from": "Ulothrix zonata", "title": "Outcome", "to": "optimum_pH: 4.5s"}, {"color": "gray", "from": "Ulothrix zonata", "title": "Concentration", "to": "range: 5 - 52 mg/L"}, {"color": "gray", "from": "Spirogyra sp.", "title": "Removes", "to": "lead"}, {"color": "gray", "from": "Spirogyra sp.", "title": "Outcome", "to": "max_adsorption_capacity: 140 mg/g biomass"}, {"color": "gray", "from": "Spirogyra sp.", "title": "Outcome", "to": "time_frame: 1.867 hours"}, {"color": "gray", "from": "Spirogyra sp.", "title": "Outcome", "to": "initial_concentration: 200 mg/L"}, {"color": "gray", "from": "Spirogyra sp.", "title": "Concentration", "to": "range: 105 - 204 mg/L"}, {"color": "gray", "from": "Spirulina platensis", "title": "Removes", "to": "cadmium"}, {"color": "black", "from": "Spirulina platensis", "title": "Uses", "to": "langmuir"}, {"color": "gray", "from": "Spirulina platensis", "title": "Outcome", "to": "removal_efficiency: 87.69 %"}, {"color": "gray", "from": "Spirulina platensis", "title": "Outcome", "to": "adsorption_model: langmuir"}, {"color": "gray", "from": "Spirulina platensis", "title": "Outcome", "to": "best_fit_model: freundlich"}, {"color": "gray", "from": "Spirulina platensis", "title": "Outcome", "to": "desired_removal_rate: 90 %"}, {"color": "gray", "from": "Spirulina platensis", "title": "Concentration", "to": "range: 40-200 mg/L"}, {"color": "gray", "from": "Parachlorella sp.", "title": "Removes", "to": "cadmium"}, {"color": "gray", "from": "Parachlorella sp.", "title": "Outcome", "to": "max_adsorption_capacity: 98.20 mg/g"}, {"color": "gray", "from": "Parachlorella sp.", "title": "Outcome", "to": "temperature: 35 \u00b0C"}, {"color": "gray", "from": "Parachlorella sp.", "title": "Concentration", "to": "range: 18-180 mg/L"}, {"color": "gray", "from": "Scenedesmus obliquus", "title": "Removes", "to": "cadmium"}, {"color": "gray", "from": "Scenedesmus obliquus", "title": "Outcome", "to": "breakthrough_time: 930 mins"}, {"color": "gray", "from": "Scenedesmus obliquus", "title": "Outcome", "to": "adsorption_capacity: 0.038 mg/g"}, {"color": "gray", "from": "Scenedesmus obliquus", "title": "Outcome", "to": "flow_rate: 6 mL/min"}, {"color": "gray", "from": "Scenedesmus obliquus", "title": "Outcome", "to": "influent_concentration: 0.008 mg/L"}, {"color": "gray", "from": "Scenedesmus obliquus", "title": "Concentration", "to": "range: 2.8-7.7 mg/L"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"nodes": {"shape": "dot", "scaling": {"min": 10, "max": 30}, "font": {"size": 14, "color": "#34495e"}}, "edges": {"color": {"inherit": true}, "width": 1.5}, "physics": {"barnesHut": {"gravitationalConstant": -3000, "springLength": 150, "springConstant": 0.05}, "minVelocity": 0.75}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
